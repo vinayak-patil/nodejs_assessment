@@ -20,7 +20,6 @@ router.get('/', async (req, res) => {
           id: category._id,
           name: category.name,
           description: category.description,
-          slug: category.slug,
           createdAt: category.createdAt
         }))
       }
@@ -55,7 +54,6 @@ router.get('/:id', async (req, res) => {
           id: category._id,
           name: category.name,
           description: category.description,
-          slug: category.slug,
           isActive: category.isActive,
           createdAt: category.createdAt,
           updatedAt: category.updatedAt
@@ -118,7 +116,6 @@ router.post('/', protect, authorize('admin'), [
           id: category._id,
           name: category.name,
           description: category.description,
-          slug: category.slug,
           createdAt: category.createdAt
         }
       }
@@ -194,7 +191,6 @@ router.put('/:id', protect, authorize('admin'), [
           id: category._id,
           name: category.name,
           description: category.description,
-          slug: category.slug,
           updatedAt: category.updatedAt
         }
       }

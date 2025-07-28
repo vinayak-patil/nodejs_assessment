@@ -16,11 +16,7 @@ const postSchema = new mongoose.Schema({
     type: String,
     maxlength: [200, 'Excerpt cannot be more than 200 characters']
   },
-  slug: {
-    type: String,
-    unique: true,
-    lowercase: true
-  },
+
   author: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
@@ -58,14 +54,7 @@ const postSchema = new mongoose.Schema({
   toObject: { virtuals: true }
 });
 
-// Create slug from title before saving
-postSchema.pre('save', function(next) {
-  if (!this.isModified('title')) {
-    return next();
-  }
-  this.slug = this.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-  next();
-});
+
 
 // Virtual for comments count
 postSchema.virtual('commentsCount', {

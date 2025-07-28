@@ -22,7 +22,7 @@ router.get('/', async (req, res) => {
       const category = await Category.findOne({ 
         $or: [
           { _id: req.query.category },
-          { slug: req.query.category }
+          { name: req.query.category }
         ]
       });
       if (category) {
@@ -39,7 +39,7 @@ router.get('/', async (req, res) => {
 
     const posts = await Post.find(query)
       .populate('author', 'name avatar')
-      .populate('category', 'name slug')
+      .populate('category', 'name')
       .populate({
         path: 'comments',
         match: { isApproved: true },
@@ -68,7 +68,6 @@ router.get('/', async (req, res) => {
           title: post.title,
           content: post.content,
           excerpt: post.excerpt,
-          slug: post.slug,
           author: {
             id: post.author._id,
             name: post.author.name,
@@ -76,8 +75,7 @@ router.get('/', async (req, res) => {
           },
           category: {
             id: post.category._id,
-            name: post.category.name,
-            slug: post.category.slug
+            name: post.category.name
           },
           tags: post.tags,
           featuredImage: post.featuredImage,
@@ -106,7 +104,7 @@ router.get('/:id', async (req, res) => {
   try {
     const post = await Post.findById(req.params.id)
       .populate('author', 'name avatar bio')
-      .populate('category', 'name slug')
+      .populate('category', 'name')
       .populate({
         path: 'comments',
         match: { isApproved: true },
@@ -135,7 +133,6 @@ router.get('/:id', async (req, res) => {
           title: post.title,
           content: post.content,
           excerpt: post.excerpt,
-          slug: post.slug,
           author: {
             id: post.author._id,
             name: post.author.name,
@@ -144,8 +141,7 @@ router.get('/:id', async (req, res) => {
           },
           category: {
             id: post.category._id,
-            name: post.category.name,
-            slug: post.category.slug
+            name: post.category.name
           },
           tags: post.tags,
           featuredImage: post.featuredImage,
@@ -222,7 +218,7 @@ router.post('/', protect, [
     });
 
     await post.populate('author', 'name avatar');
-    await post.populate('category', 'name slug');
+    await post.populate('category', 'name');
 
     res.status(201).json({
       success: true,
@@ -233,7 +229,6 @@ router.post('/', protect, [
           title: post.title,
           content: post.content,
           excerpt: post.excerpt,
-          slug: post.slug,
           author: {
             id: post.author._id,
             name: post.author.name,
@@ -241,8 +236,7 @@ router.post('/', protect, [
           },
           category: {
             id: post.category._id,
-            name: post.category.name,
-            slug: post.category.slug
+            name: post.category.name
           },
           tags: post.tags,
           featuredImage: post.featuredImage,
@@ -316,7 +310,7 @@ router.put('/:id', protect, isAuthor(Post), [
 
     await post.save();
     await post.populate('author', 'name avatar');
-    await post.populate('category', 'name slug');
+    await post.populate('category', 'name');
 
     res.json({
       success: true,
@@ -327,7 +321,6 @@ router.put('/:id', protect, isAuthor(Post), [
           title: post.title,
           content: post.content,
           excerpt: post.excerpt,
-          slug: post.slug,
           author: {
             id: post.author._id,
             name: post.author.name,
@@ -335,8 +328,7 @@ router.put('/:id', protect, isAuthor(Post), [
           },
           category: {
             id: post.category._id,
-            name: post.category.name,
-            slug: post.category.slug
+            name: post.category.name
           },
           tags: post.tags,
           featuredImage: post.featuredImage,
@@ -397,7 +389,7 @@ router.get('/category/:categoryId', async (req, res) => {
       status: 'published'
     })
       .populate('author', 'name avatar')
-      .populate('category', 'name slug')
+      .populate('category', 'name')
       .populate({
         path: 'comments',
         match: { isApproved: true },
@@ -427,15 +419,13 @@ router.get('/category/:categoryId', async (req, res) => {
         category: {
           id: category._id,
           name: category.name,
-          description: category.description,
-          slug: category.slug
+          description: category.description
         },
         posts: posts.map(post => ({
           id: post._id,
           title: post.title,
           content: post.content,
           excerpt: post.excerpt,
-          slug: post.slug,
           author: {
             id: post.author._id,
             name: post.author.name,
@@ -443,8 +433,7 @@ router.get('/category/:categoryId', async (req, res) => {
           },
           category: {
             id: post.category._id,
-            name: post.category.name,
-            slug: post.category.slug
+            name: post.category.name
           },
           tags: post.tags,
           featuredImage: post.featuredImage,
@@ -516,7 +505,6 @@ router.get('/trending', async (req, res) => {
           title: 1,
           content: 1,
           excerpt: 1,
-          slug: 1,
           author: {
             id: '$author._id',
             name: '$author.name',
@@ -524,8 +512,7 @@ router.get('/trending', async (req, res) => {
           },
           category: {
             id: '$category._id',
-            name: '$category.name',
-            slug: '$category.slug'
+            name: '$category.name'
           },
           tags: 1,
           featuredImage: 1,

@@ -129,12 +129,16 @@ const importData = async () => {
     const userRole = createdRoles.find(role => role.name === 'user');
     const adminRole = createdRoles.find(role => role.name === 'admin');
 
-    const userData = users.map((user, index) => ({
-      ...user,
-      role: index === 2 ? adminRole._id : userRole._id // Third user is admin
-    }));
-
-    const createdUsers = await User.insertMany(userData);
+    // Create users one by one to ensure password hashing
+    const createdUsers = [];
+    for (let i = 0; i < users.length; i++) {
+      const user = users[i];
+      const newUser = await User.create({
+        ...user,
+        role: i === 2 ? adminRole._id : userRole._id // Third user is admin
+      });
+      createdUsers.push(newUser);
+    }
     console.log('Users imported');
 
     // Create categories
